@@ -34,4 +34,22 @@ public class PenaliteService {
         penalite.setDateFin(fin);
         return repository.save(penalite);
     }
+
+    // Méthode obfusquée pour récupérer toutes les pénalités
+    public List<Penalite> recupererToutesPenalites() {
+        return repository.findAll();
+    }
+
+    // Méthode utilitaire pour vérifier si une personne a une pénalité active
+    public boolean aPenaliteActive(Personne personne) {
+        java.time.LocalDate today = java.time.LocalDate.now();
+        return repository.findByPersonne(personne).stream()
+            .anyMatch(p -> p.getDateDebut() != null && p.getDateFin() != null &&
+                !today.isBefore(p.getDateDebut()) && !today.isAfter(p.getDateFin()));
+    }
+
+    // Méthode obfusquée pour pénaliser un adhérent
+    public Penalite penaliserAdherentObfusque(mg.itu.library.model.Adherent adherent, int nbJours, mg.itu.library.model.Pret pret) {
+        return penaliserAdherent(adherent, nbJours, pret);
+    }
 }
