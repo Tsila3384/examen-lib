@@ -1,0 +1,213 @@
+/* Animations et effets supplémentaires pour le thème bibliothèque */
+
+/* Animation de chargement */
+@keyframes bookFlip {
+    0% { transform: rotateY(0deg); }
+    50% { transform: rotateY(-180deg); }
+    100% { transform: rotateY(0deg); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}
+
+.loading {
+    animation: bookFlip 2s infinite;
+}
+
+/* Effet de brillance sur les cartes */
+.livre-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s;
+}
+
+.livre-card:hover::after {
+    left: 100%;
+}
+
+/* Effet de survol sur les boutons */
+.btn-primary:hover {
+    box-shadow: 0 8px 25px rgba(139, 69, 19, 0.4);
+    transform: translateY(-3px);
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+}
+
+/* Animations pour les alertes */
+.alert {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Effet de focus amélioré */
+.form-control:focus, input:focus, select:focus {
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+}
+
+/* Animation du header */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90" opacity="0.1" fill="white">📚</text></svg>') repeat;
+    background-size: 150px 150px;
+    animation: float 15s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Hover effects pour les tables */
+.admin-table tbody tr {
+    transition: all 0.3s ease;
+}
+
+.admin-table tbody tr:hover {
+    background: rgba(218, 165, 32, 0.15);
+    transform: scale(1.01);
+    box-shadow: 0 4px 15px rgba(139, 69, 19, 0.1);
+}
+
+/* Animations pour les menus */
+.menu-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-card:hover {
+    transform: translateY(-8px) rotate(1deg);
+}
+
+.frontoffice-menu .menu-card:nth-child(even):hover {
+    transform: translateY(-8px) rotate(-1deg);
+}
+
+/* Effet de typing pour les titres */
+.typing-effect {
+    overflow: hidden;
+    border-right: 2px solid var(--primary-color);
+    white-space: nowrap;
+    margin: 0 auto;
+    animation: typing 3s steps(40, end), blink 0.75s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink {
+    from, to { border-color: transparent; }
+    50% { border-color: var(--primary-color); }
+}
+
+/* Patterns de fond */
+.auth-body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(139, 69, 19, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(218, 165, 32, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Micro-interactions */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* Responsive animations */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Loading spinner pour les formulaires */
+.form-loading {
+    position: relative;
+}
+
+.form-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid var(--border-color);
+    border-top: 2px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Amélioration des tooltips */
+[title] {
+    position: relative;
+    cursor: help;
+}
+
+/* Effet de parallaxe léger */
+.container {
+    transform-style: preserve-3d;
+}
+
+.livre-card:hover {
+    transform: translateY(-5px) translateZ(10px);
+}
+
+/* Gradient animé pour les backgrounds */
+.gradient-animated {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+    background-size: 300% 300%;
+    animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}

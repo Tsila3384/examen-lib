@@ -1,0 +1,210 @@
+/* Styles Admin - Thème Bibliothèque */
+.admin-body {
+    background: linear-gradient(135deg, #2c2c2c 0%, #4a4a4a 100%);
+    min-height: 100vh;
+    font-family: 'Georgia', serif;
+}
+
+.admin-container  {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(139, 69, 19, 0.2);
+}
+
+.admin-header {
+    background: linear-gradient(90deg, #8b4513 0%, #a0522d 50%, #8b4513 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+    position: relative;
+}
+
+.admin-header::before {
+    content: '🏛️';
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.admin-header h1, .admin-header h2 {
+    margin: 0;
+    font-family: 'Georgia', serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Tables admin spécifiques */
+.admin-table {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(139, 69, 19, 0.15);
+    border: 2px solid rgba(139, 69, 19, 0.1);
+}
+
+.admin-table thead {
+    background: linear-gradient(90deg, #8b4513 0%, #a0522d 50%, #8b4513 100%);
+}
+
+.admin-table th {
+    color: white;
+    font-family: 'Georgia', serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    padding: 1.2rem;
+    border: none;
+}
+
+.admin-table td {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid rgba(139, 69, 19, 0.1);
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:nth-child(even) {
+    background: rgba(245, 244, 240, 0.5);
+}
+
+.admin-table tbody tr:hover {
+    background: rgba(218, 165, 32, 0.1);
+    transform: scale(1.01);
+    transition: all 0.3s ease;
+}
+
+/* Status badges pour admin */
+.status-badge {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-en-attente {
+    background: rgba(255, 193, 7, 0.2);
+    color: #856404;
+    border: 1px solid rgba(255, 193, 7, 0.5);
+}
+
+.status-valide {
+    background: rgba(40, 167, 69, 0.2);
+    color: #155724;
+    border: 1px solid rgba(40, 167, 69, 0.5);
+}
+
+.status-refuse {
+    background: rgba(220, 53, 69, 0.2);
+    color: #721c24;
+    border: 1px solid rgba(220, 53, 69, 0.5);
+}
+
+.status-en-cours {
+    background: rgba(23, 162, 184, 0.2);
+    color: #0c5460;
+    border: 1px solid rgba(23, 162, 184, 0.5);
+}
+
+/* Navigation admin */
+.admin-nav {
+    background: rgba(139, 69, 19, 0.9);
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.admin-nav .btn {
+    margin: 0.25rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    background: transparent;
+}
+
+.admin-nav .btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: white;
+    transform: translateY(-2px);
+}
+
+/* Cartes statistiques */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: linear-gradient(145deg, white 0%, #f8f6f0 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 8px 25px rgba(139, 69, 19, 0.15);
+    border: 2px solid rgba(139, 69, 19, 0.1);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(139, 69, 19, 0.2);
+}
+
+.stat-card h3 {
+    color: #8b4513;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.stat-card p {
+    color: #2e8b57;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Formulaires admin */
+.admin-form {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(139, 69, 19, 0.1);
+    border: 2px solid rgba(139, 69, 19, 0.1);
+}
+
+.admin-form .form-group label {
+    color: #8b4513;
+    font-family: 'Georgia', serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+}
+
+/* Responsive admin */
+@media (max-width: 768px) {
+    .admin-nav {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-table {
+        font-size: 0.9rem;
+    }
+    
+    .admin-table th, .admin-table td {
+        padding: 0.8rem;
+    }
+}

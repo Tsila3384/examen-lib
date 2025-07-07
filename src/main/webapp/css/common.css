@@ -1,0 +1,401 @@
+/* CSS commun pour toute l'application - Thème Bibliothèque */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.6;
+    color: #2c2c2c;
+    background: linear-gradient(135deg, #f5f4f0 0%, #e8e6e0 100%);
+    min-height: 100vh;
+}
+
+/* Variables CSS - Thème Bibliothèque */
+:root {
+    --primary-color: #8b4513;       /* Brun cuir */
+    --secondary-color: #daa520;     /* Or ancien */
+    --accent-color: #2e8b57;        /* Vert forêt */
+    --success-color: #228b22;
+    --danger-color: #dc143c;
+    --warning-color: #daa520;
+    --info-color: #4682b4;
+    --light-color: #f5f4f0;         /* Parchemin clair */
+    --dark-color: #2c2c2c;
+    --border-color: #d2b48c;        /* Tan */
+    --shadow: 0 4px 12px rgba(139, 69, 19, 0.15);
+    --shadow-lg: 0 20px 40px rgba(139, 69, 19, 0.2);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    --book-spine: linear-gradient(90deg, #8b4513 0%, #a0522d  50%, #8b4513 100%);
+}
+
+/* Boutons - Style Bibliothèque */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: 2px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: var(--transition);
+    margin: 0.25rem;
+    font-family: 'Georgia', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: var(--transition);
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: var(--book-spine);
+    color: white;
+    box-shadow: var(--shadow);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 69, 19, 0.3);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--primary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background: var(--secondary-color);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+    border-color: var(--danger-color);
+}
+
+.btn-info {
+    background: var(--info-color);
+    color: white;
+    border-color: var(--info-color);
+}
+
+.btn-warning {
+    background: var(--warning-color);
+    color: var(--dark-color);
+    border-color: var(--warning-color);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-warning {
+    background: var(--warning-color);
+    color: #212529;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Conteneur principal - Style Bibliothèque */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Titres - Style Bibliothèque */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Georgia', serif;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+h1 {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 2px 2px 4px rgba(139, 69, 19, 0.3);
+}
+
+h1::after {
+    content: '📚';
+    display: block;
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+    border-bottom: 3px solid var(--secondary-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+}
+
+/* Catalogue de livres */
+.catalogue {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.livre-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8f6f0 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 2px solid var(--border-color);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.livre-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--book-spine);
+}
+
+.livre-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(139, 69, 19, 0.2);
+    border-color: var(--secondary-color);
+}
+
+.livre-card h3 {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.livre-card p {
+    margin-bottom: 0.8rem;
+    line-height: 1.5;
+}
+
+.livre-card strong {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+/* Formulaires - Style Bibliothèque */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    font-family: 'Georgia', serif;
+}
+
+.form-control, input[type="text"], input[type="email"], input[type="password"], 
+input[type="date"], select, textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.9);
+    font-family: 'Georgia', serif;
+}
+
+.form-control:focus, input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.2);
+    background: white;
+}
+
+/* Tables - Style Bibliothèque */
+.table, table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.table th, table th {
+    background: var(--book-spine);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-family: 'Georgia', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table td, table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+.table tbody tr:hover, table tbody tr:hover {
+    background: rgba(218, 165, 32, 0.1);
+}
+
+/* Alertes - Style Bibliothèque */
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    border-left: 4px solid;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: rgba(34, 139, 34, 0.1);
+    border-left-color: var(--success-color);
+    color: var(--success-color);
+}
+
+.alert-danger {
+    background: rgba(220, 20, 60, 0.1);
+    border-left-color: var(--danger-color);
+    color: var(--danger-color);
+}
+
+.alert-warning {
+    background: rgba(218, 165, 32, 0.1);
+    border-left-color: var(--warning-color);
+    color: #8b6914;
+}
+
+.alert-info {
+    background: rgba(70, 130, 180, 0.1);
+    border-left-color: var(--info-color);
+    color: var(--info-color);
+}
+
+/* Navigation et liens */
+.link, a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: var(--transition);
+    font-weight: 500;
+}
+
+.link:hover, a:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+/* Badge */
+.badge {
+    display: inline-block;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.bg-warning {
+    background: var(--warning-color);
+    color: var(--dark-color);
+}
+
+.text-dark {
+    color: var(--dark-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+        margin: 1rem;
+    }
+    
+    .catalogue {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+}

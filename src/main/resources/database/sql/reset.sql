@@ -1,0 +1,58 @@
+-- Script de nettoyage complet de la base (TRUNCATE dans l'ordre des dépendances)
+-- Attention : désactive les contraintes de vérification temporairement
+
+-- Désactivation des contraintes de vérification
+SET session_replication_role = 'replica';
+
+TRUNCATE TABLE statut_reservation RESTART IDENTITY CASCADE;
+TRUNCATE TABLE reservation RESTART IDENTITY CASCADE;
+TRUNCATE TABLE statut_prolongation RESTART IDENTITY CASCADE;
+TRUNCATE TABLE prolongation_pret RESTART IDENTITY CASCADE;
+TRUNCATE TABLE pret_historique RESTART IDENTITY CASCADE;
+TRUNCATE TABLE statut_validation_pret RESTART IDENTITY CASCADE;
+TRUNCATE TABLE pret RESTART IDENTITY CASCADE;
+TRUNCATE TABLE penalite RESTART IDENTITY CASCADE;
+TRUNCATE TABLE abonnement RESTART IDENTITY CASCADE;
+TRUNCATE TABLE statut_exemplaire_livre RESTART IDENTITY CASCADE;
+TRUNCATE TABLE exemplaire RESTART IDENTITY CASCADE;
+TRUNCATE TABLE restriction_livre RESTART IDENTITY CASCADE;
+TRUNCATE TABLE categorie_livre RESTART IDENTITY CASCADE;
+TRUNCATE TABLE livre RESTART IDENTITY CASCADE;
+TRUNCATE TABLE categorie RESTART IDENTITY CASCADE;
+TRUNCATE TABLE quota RESTART IDENTITY CASCADE;
+TRUNCATE TABLE statut_disponibilite RESTART IDENTITY CASCADE;
+TRUNCATE TABLE statut_pret RESTART IDENTITY CASCADE;
+TRUNCATE TABLE statut_validation RESTART IDENTITY CASCADE;
+TRUNCATE TABLE configuration RESTART IDENTITY CASCADE;
+TRUNCATE TABLE jour_ferie RESTART IDENTITY CASCADE;
+TRUNCATE TABLE type_personne RESTART IDENTITY CASCADE;
+TRUNCATE TABLE adherent RESTART IDENTITY CASCADE;
+TRUNCATE TABLE bibliothecaire RESTART IDENTITY CASCADE;
+TRUNCATE TABLE personne RESTART IDENTITY CASCADE;
+
+-- Réactivation des contraintes de vérification
+SET session_replication_role = 'origin';
+
+-- Remise à 1 de toutes les séquences SERIAL
+ALTER SEQUENCE type_personne_id_seq RESTART WITH 1;
+ALTER SEQUENCE personne_id_seq RESTART WITH 1;
+ALTER SEQUENCE categorie_id_seq RESTART WITH 1;
+ALTER SEQUENCE livre_id_seq RESTART WITH 1;
+ALTER SEQUENCE restriction_livre_id_seq RESTART WITH 1;
+ALTER SEQUENCE statut_disponibilite_id_seq RESTART WITH 1;
+ALTER SEQUENCE exemplaire_id_seq RESTART WITH 1;
+ALTER SEQUENCE statut_exemplaire_livre_id_seq RESTART WITH 1;
+ALTER SEQUENCE abonnement_id_seq RESTART WITH 1;
+ALTER SEQUENCE penalite_id_seq RESTART WITH 1;
+ALTER SEQUENCE quota_id_seq RESTART WITH 1;
+ALTER SEQUENCE statut_pret_id_seq RESTART WITH 1;
+ALTER SEQUENCE statut_validation_id_seq RESTART WITH 1;
+ALTER SEQUENCE pret_id_seq RESTART WITH 1;
+ALTER SEQUENCE statut_validation_pret_id_seq RESTART WITH 1;
+ALTER SEQUENCE pret_historique_id_seq RESTART WITH 1;
+ALTER SEQUENCE prolongation_pret_id_seq RESTART WITH 1;
+ALTER SEQUENCE statut_prolongation_id_seq RESTART WITH 1;
+ALTER SEQUENCE reservation_id_seq RESTART WITH 1;
+ALTER SEQUENCE statut_reservation_id_seq RESTART WITH 1;
+ALTER SEQUENCE jour_ferie_id_seq RESTART WITH 1;
+ALTER SEQUENCE configuration_id_seq RESTART WITH 1;

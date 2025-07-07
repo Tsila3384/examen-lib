@@ -1,0 +1,159 @@
+Conception projet Bibliotheque
+Entites : 	Livre,Exemplaire,Pret : sur place , emporte,Adhesion ; prof , etudiant,  Penalite,Cotisation,Inscription
+
+Fonctionnalité : Enregistrer un nouvel adhérent
+Titre : Enregistrer un nouvel adhérent
+Objectif : Créer un compte pour un nouveau membre de la bibliothèque
+Acteur : Bibliothécaire
+Input :
+•	Nom, prénom
+•	Email
+•	Type d'abonnement (enfant/étudiant/adulte/senior)
+•	Adresse
+Scénario nominal :
+1.	Le bibliothécaire saisit les informations du nouvel adhérent
+2.	Le système génère un numéro d'adhérent unique
+3.	Le compte est créé avec date d'expiration (date courante + 1 an)
+4.	Un email de confirmation est envoyé
+Scénario alternatif :
+•	Email déjà existant → "Cet email est déjà utilisé"
+•	Champs obligatoires manquants → "Veuillez compléter tous les champs requis"
+Règles de gestion :
+1.	L'email doit être unique
+2.	Le numéro d'adhérent est généré automatiquement
+3.	La date d'expiration est fixée à 1 an après l'inscription
+Résultat :
+•	Nouveau compte adhérent créé
+
+
+Fonctionnalité : Prolonger un abonnement
+Titre : Prolonger un abonnement
+Objectif : Renouveler la validité d'un abonnement
+Acteur : Bibliothécaire
+Input :
+•	Numéro d'adhérent
+•	Mode de paiement
+•	Montant
+Scénario nominal :
+1.	Saisie du numéro d'adhérent
+2.	Vérification de l'éligibilité (pénalités réglées)
+3.	Enregistrement du paiement
+4.	Mise à jour date expiration (date courante + 1 an)
+Scénario alternatif :
+•	Pénalités impayées → "Veuvez régler les pénalités avant renouvellement"
+•	Abonnement toujours valide → "Abonnement valide jusqu'au [date]"
+Règles de gestion :
+1.	Le paiement doit être complet
+2.	Toutes les pénalités doivent être réglées
+3.	La nouvelle date est calculée à partir de la date courante
+Résultat :
+•	Abonnement prolongé d'un an
+
+
+Fonctionnalité : Gérer les réservations
+Titre : Réserver un livre
+Objectif : Permettre la réservation d'un livre indisponible
+Acteur : Adhérent ou Bibliothécaire
+Input :
+•	Numéro d'adhérent
+•	Référence du livre
+Scénario nominal :
+1.	Vérification éligibilité adhérent
+2.	Vérification disponibilité livre
+3.	Enregistrement réservation (7 jours)
+4.	Envoi email confirmation
+Scénario alternatif :
+•	Livre disponible → "Disponible pour emprunt immédiat"
+•	Adhérent non éligible → "Non éligible à la réservation"
+•	Réservation existante → "Une réservation est déjà en cours"
+Règles de gestion :
+1.	1 réservation maximum par adhérent
+2.	Durée de validité : 7 jours
+3.	Priorité FIFO
+Résultat :
+•	Livre réservé
+•	Notification envoyée lors disponibilité
+
+
+Fonctionnalité : Calculer les pénalités
+Titre : Calculer les pénalités de retard
+Objectif : Déterminer le montant des pénalités pour retard
+Acteur : Système
+Input :
+•	Date de retour prévue
+•	Date de retour effective
+Scénario nominal :
+1.	Calcul du nombre de jours de retard
+2.	Application du tarif (0.50€/jour)
+3.	Mise à jour du compte adhérent
+Scénario alternatif :
+•	Retour anticipé → Aucune pénalité
+•	Retard > 30 jours → Blocage compte
+Règles de gestion :
+1.	Jours fériés exclus du calcul
+2.	Blocage automatique après 30 jours de retard
+3.	Pénalité cumulable
+Résultat :
+•	Montant pénalité calculé
+•	Compte mis à jour
+
+
+Fonctionnalité : Consulter les statistiques
+Titre : Générer des rapports statistiques
+Objectif : Fournir des indicateurs de gestion
+Acteur : Bibliothécaire
+Input :
+•	Période (optionnel)
+•	Catégorie (optionnel)
+Scénario nominal :
+1.	Sélection des critères
+2.	Calcul des indicateurs
+3.	Affichage des résultats
+Résultat :
+•	Top 5 livres empruntés
+•	Nombre de prêts par période
+•	Taux de retard
+•	Option export PDF/Excel
+
+Fonctionnalité : Emprunter un livre
+Titre : Effectuer un emprunt
+Objectif : Permettre à un adhérent d'emprunter un livre disponible
+Acteur : Bibliothécaire
+Input :
+•	Numéro d'adhérent
+•	Référence de l'exemplaire
+•	Type de prêt (sur place/emporté)
+Scénario nominal :
+1.	Le système vérifie :
+o	Validité de l'abonnement
+o	Quota non atteint (selon profil)
+o	Absence de pénalités impayées
+2.	Vérification de la disponibilité de l'exemplaire
+3.	Enregistrement du prêt avec :
+o	Date d'emprunt = date courante
+o	Date de retour = date courante + durée selon type (7j/14j)
+4.	Mise à jour du statut de l'exemplaire → "Emprunté"
+Scénarios alternatifs :
+•	Abonnement expiré :
+Le système affiche : "Veuillez renouveler votre abonnement"
+•	Quota d'emprunt atteint :
+Message : "Limite d'emprunts atteinte (X/Y livres)"
+•	Exemplaire indisponible :
+Notification : "Cet exemplaire n'est pas empruntable"
+•	Pénalités impayées :
+Avertissement : "Réglez vos pénalités pour emprunter"
+•	Livre restreint (ex: adulte seulement) :
+Refus : "Ce livre est réservé aux [profil requis]"
+Règles de gestion :
+1.	Durées maximales :
+o	Sur place : 7 jours
+o	Emporté : 14 jours
+2.	Quotas par profil :
+o	Enfant : 3 livres
+o	Étudiant/Adulte : 5 livres
+o	Senior : 10 livres
+3.	Jours fériés : Exclus du calcul des retards
+Résultat :
+•	Exemplaire marqué comme emprunté
+•	Prêt enregistré dans l'historique
+•	Email de confirmation envoyé avec date de retour

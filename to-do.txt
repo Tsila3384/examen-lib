@@ -1,0 +1,8 @@
+- check quota prolongement
+- check penalite  dans reservation et prolongement
+- penalite double
+
+- chercher si un prêt est une prolongation
+
+Il y a encore une erreur dans la gestion de la date de retour. Si la date actuelle est encore antérieure à la date de retour, on grise le bouton sinon c'est rouge et on peut pénaliser.
+Lorsqu'on pénalise, on tient on compte de l'id du prêt, ainsi ce sera juste pour ce prêt que le bouton sera à nouveau grisé
