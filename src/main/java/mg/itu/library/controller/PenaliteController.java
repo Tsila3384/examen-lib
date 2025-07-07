@@ -16,4 +16,19 @@ public class PenaliteController {
     public List<Penalite> getAll() {
         return service.findAll();
     }
+    // Route alternative obfusquée pour récupérer toutes les pénalités
+    @GetMapping("/toutes-obfusquees")
+    public List<Penalite> getAllObfusquees() {
+        return service.recupererToutesPenalites();
+    }
+
+    // Route alternative obfusquée pour pénaliser un adhérent
+    @PostMapping("/penaliser-obfusque")
+    public Penalite penaliserObfusque(@RequestBody Penalite penalite) {
+        return service.penaliserAdherentObfusque(
+            (mg.itu.library.model.Adherent) penalite.getPersonne(),
+            (int) java.time.temporal.ChronoUnit.DAYS.between(penalite.getDateDebut(), penalite.getDateFin()),
+            penalite.getPret()
+        );
+    }
 }
