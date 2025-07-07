@@ -16,4 +16,16 @@ public class ReservationController {
     public List<Reservation> getAll() {
         return service.findAll();
     }
+
+    // Route alternative obfusquée pour récupérer toutes les réservations
+    @GetMapping("/toutes-obfusquees")
+    public List<Reservation> getAllObfusquees() {
+        return service.recupererToutesReservations();
+    }
+
+    // Route alternative obfusquée pour créer une réservation
+    @PostMapping("/creer-obfusquee")
+    public String creerReservationObfusquee(@RequestBody Reservation reservation) {
+        return service.creerReservationObfusquee(reservation);
+    }
 }
