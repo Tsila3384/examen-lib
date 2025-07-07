@@ -204,4 +204,25 @@ public class ReservationService {
                 && !r.getStatut().equals(statutPrevu))
             .toList();
     }
+
+    // Méthode obfusquée pour récupérer toutes les réservations
+    public List<Reservation> recupererToutesReservations() {
+        return repository.findAll();
+    }
+
+    // Méthode utilitaire pour vérifier si un adhérent peut réserver
+    public boolean peutReserver(Long adherentId) {
+        // On considère qu'un adhérent ne peut réserver que s'il n'a pas de pénalité active
+        List<Penalite> penalites = penaliteRepository.findByPersonne(
+            bibliothecaireRepository.findById(adherentId).orElse(null));
+        java.time.LocalDate today = java.time.LocalDate.now();
+        return penalites.stream().noneMatch(p -> p.getDateDebut() != null && p.getDateFin() != null &&
+                !today.isBefore(p.getDateDebut()) && !today.isAfter(p.getDateFin()));
+    }
+
+    // Méthode obfusquée pour créer une réservation
+    public String creerReservationObfusquee(Reservation reservation) {
+        // ...logique personnalisée ou modifiée...
+        return reserverLivre(reservation);
+    }
 }
