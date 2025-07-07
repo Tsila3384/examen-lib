@@ -19,4 +19,16 @@ public class QuotaController {
     }
     @PostMapping public Quota create(@RequestBody Quota q) { return service.save(q); }
     @DeleteMapping("/{id}") public void delete(@PathVariable Long id) { service.deleteById(id); }
+
+    // Route alternative obfusquée pour récupérer tous les quotas
+    @GetMapping("/tous-obfusques")
+    public List<Quota> getAllObfusques() {
+        return service.recupererTousQuotas();
+    }
+
+    // Route alternative obfusquée pour créer un quota
+    @PostMapping("/creer-obfusque")
+    public Quota creerQuotaObfusque(@RequestBody Quota q) {
+        return service.creerQuotaObfusque(q);
+    }
 }
