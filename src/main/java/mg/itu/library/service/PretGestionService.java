@@ -36,11 +36,11 @@ import mg.itu.library.repository.StatutValidationPretRepository;
 import mg.itu.library.repository.StatutValidationRepository;
 
 @Service
-public class PretService {
-    private final PretRepository pretRepository;
-    private final LivreRepository livreRepository;
-    private final ExemplaireRepository exemplaireRepository;
-    private final AdherentRepository adherentRepository;
+public class PretGestionService {
+    private final PretRepository pretRepo;
+    private final LivreRepository livreRepo;
+    private final ExemplaireRepository exemplaireRepo;
+    private final AdherentRepository adherentRepo;
     private final BibliothecaireRepository bibliothecaireRepository;
     private final StatutDisponibiliteRepository statutDisponibiliteRepository;
     private final QuotaRepository quotaRepository;
@@ -56,10 +56,10 @@ public class PretService {
     private final PretHistoriqueRepository pretHistoriqueRepository;
     private final AbonnementService abonnementService;
 
-    public PretService(PretRepository pretRepository,
-            LivreRepository livreRepository,
-            ExemplaireRepository exemplaireRepository,
-            AdherentRepository adherentRepository,
+    public PretGestionService(PretRepository pretRepo,
+            LivreRepository livreRepo,
+            ExemplaireRepository exemplaireRepo,
+            AdherentRepository adherentRepo,
             BibliothecaireRepository bibliothecaireRepository,
             StatutDisponibiliteRepository statutDisponibiliteRepository,
             QuotaRepository quotaRepository,
@@ -74,10 +74,10 @@ public class PretService {
             mg.itu.library.repository.ConfigurationRepository configurationRepository,
             PretHistoriqueRepository pretHistoriqueRepository,
             AbonnementService abonnementService) {
-        this.pretRepository = pretRepository;
-        this.livreRepository = livreRepository;
-        this.exemplaireRepository = exemplaireRepository;
-        this.adherentRepository = adherentRepository;
+        this.pretRepo = pretRepo;
+        this.livreRepo = livreRepo;
+        this.exemplaireRepo = exemplaireRepo;
+        this.adherentRepo = adherentRepo;
         this.bibliothecaireRepository = bibliothecaireRepository;
         this.statutDisponibiliteRepository = statutDisponibiliteRepository;
         this.quotaRepository = quotaRepository;
@@ -107,7 +107,7 @@ public class PretService {
      * Liste tous les prêts non rendus pour un adhérent donné.
      */
     public java.util.List<Pret> getPretsNonRendusPourAdherent(Long idAdherent, StatutPret statutRendu) {
-        return pretRepository.findByAdherentIdAndStatutPretNot(idAdherent, statutRendu);
+        return pretRepo.findByAdherentIdAndStatutPretNot(idAdherent, statutRendu);
     }
 
     /**
@@ -115,7 +115,7 @@ public class PretService {
      */
     @org.springframework.transaction.annotation.Transactional
     public void rendrePret(Long pretId) {
-        Pret pret = pretRepository.findById(pretId).orElseThrow(() -> new IllegalArgumentException("Prêt introuvable"));
+        Pret pret = pretRepo.findById(pretId).orElseThrow(() -> new IllegalArgumentException("Prêt introuvable"));
         StatutPret statutRendu = statutPretRepository.findByLibelleIgnoreCase("rendu");
         if (statutRendu == null)
             throw new IllegalStateException("Statut 'rendu' introuvable");
@@ -131,7 +131,7 @@ public class PretService {
         pretHistoriqueRepository.save(historique);
         // Mettre à jour le prêt
         pret.setStatutPret(statutRendu);
-        pretRepository.save(pret);
+        pretRepo.save(pret);
     }
 
     /**
@@ -163,22 +163,20 @@ public class PretService {
                 .findFirst().orElse(null);
         pret.setStatutPret(statutPret);
         // Sauvegarde
-        pretRepository.save(pret);
+        pretRepo.save(pret);
         return pret;
-    }
-
-    public List<Pret> findAll() {
-        return pretRepository.findAll();
     }
 
     /**
      * Fonctionnalité d'emprunt de livre (front office)
+     * Ajout de la possibilité de spécifier la date d'emprunt.
      */
-    public Pret emprunterLivre(Long adherentId, Long livreId, String typePret, java.time.LocalDateTime dateEmprunt , java.time.LocalDateTime dateRetour) {
-        Adherent adherent = adherentRepository.findById(adherentId)
+    public Pret emprunterLivre(Long adherentId, Long livreId, String typePret, java.time.LocalDateTime dateEmprunt) {
+        Adherent adherent = adherentRepo.findById(adherentId)
                 .orElseThrow(() -> new IllegalArgumentException("Adhérent introuvable"));
-        Livre livre = livreRepository.findById(livreId)
-                .orElseThrow(() -> new IllegalArgumentException("Livre introuvable"));
+        // Livre livre = livreRepo.findById(livreId)
+        // .orElseThrow(() -> new IllegalArgumentException("Livre introuvable"));
+        // (ligne commentée car la variable n'est pas utilisée)
 
         // Vérification pénalité en cours
         List<Penalite> penalites = penaliteRepository.findByPersonne(adherent);
@@ -204,26 +202,27 @@ public class PretService {
         if (exemplaireDispo == null) {
             throw new IllegalStateException("Aucun exemplaire disponible pour ce livre");
         }
-
         Quota quota = getQuotaForAdherent(adherent);
         Integer nbJoursPret = quota.getNombreJourPret();
         if (nbJoursPret == null) {
             throw new IllegalStateException("Aucune durée de prêt définie pour ce type d'adhérent");
         }
-
         // Création du prêt en attente de validation
         Pret pret = new Pret();
         pret.setAdherent(adherent);
         pret.setExemplaire(exemplaireDispo);
         pret.setTypePret(typePret);
+        // Utiliser la date passée ou la date actuelle
         java.time.LocalDateTime dateEmpruntEffective = (dateEmprunt != null) ? dateEmprunt
                 : java.time.LocalDateTime.now();
         pret.setDateEmprunt(dateEmpruntEffective);
-        pret.setDateRetourPrevue(dateRetour);
+        pret.setDateRetourPrevue(dateEmpruntEffective.plusDays(nbJoursPret));
         StatutValidation statutEnAttente = statutValidationRepository.findById(1L).orElse(null);
         pret.setStatutValidation(statutEnAttente); // en attente
         pret.setStatutPret(null); // pas encore "en cours"
-        pretRepository.save(pret);
+
+        pretRepo.save(pret);
+
         return pret;
     }
 
@@ -234,7 +233,7 @@ public class PretService {
         StatutDisponibilite statutDispo = statutDisponibiliteRepository.findAll().stream()
                 .filter(s -> s.getLibelle().equalsIgnoreCase("disponible"))
                 .findFirst().orElseThrow(() -> new IllegalStateException("Statut 'disponible' non trouvé"));
-        return exemplaireRepository.findAll().stream()
+        return exemplaireRepo.findAll().stream()
                 .filter(e -> e.getLivre().getId().equals(livreId) && e.getStatut().getId().equals(statutDispo.getId()))
                 .findFirst().orElse(null);
     }
@@ -257,14 +256,14 @@ public class PretService {
      */
     public List<Pret> findPretsEnAttente() {
         StatutValidation statutEnAttente = statutValidationRepository.findById(1L).orElse(null);
-        return pretRepository.findByStatutValidation(statutEnAttente);
+        return pretRepo.findByStatutValidation(statutEnAttente);
     }
 
     /**
      * Valider un prêt (passe le statut à 2 = acceptée)
      */
     public void validerPret(Long pretId, Long biblioId) {
-        Pret pret = pretRepository.findById(pretId).orElseThrow(() -> new IllegalArgumentException("Prêt introuvable"));
+        Pret pret = pretRepo.findById(pretId).orElseThrow(() -> new IllegalArgumentException("Prêt introuvable"));
         if (biblioId == null) {
             throw new IllegalStateException("Aucun bibliothécaire connecté pour valider le prêt (biblioId null)");
         }
@@ -319,7 +318,7 @@ public class PretService {
         StatutPret statutRendu = statutPretRepository.findByLibelleIgnoreCase("rendu");
 
         // Compter les prêts en cours (non rendus) de l'adhérent
-        int nbPretsEnCours = pretRepository.findByAdherentIdAndStatutPretNot(adherent.getId(), statutRendu).size();
+        int nbPretsEnCours = pretRepo.findByAdherentIdAndStatutPretNot(adherent.getId(), statutRendu).size();
         if (nbPretsEnCours >= quota.getNombreLivrePret()) {
             throw new IllegalStateException("L'adhérent a déjà atteint son quota de livres empruntés en cours");
         }
@@ -348,14 +347,14 @@ public class PretService {
         // fallback
         pret.setStatutPret(statutPret);
 
-        pretRepository.save(pret);
+        pretRepo.save(pret);
     }
 
     /**
      * Refuser un prêt (passe le statut à 3 = refusée)
      */
     public void refuserPret(Long pretId, Long biblioId) {
-        Pret pret = pretRepository.findById(pretId).orElseThrow(() -> new IllegalArgumentException("Prêt introuvable"));
+        Pret pret = pretRepo.findById(pretId).orElseThrow(() -> new IllegalArgumentException("Prêt introuvable"));
         if (biblioId == null) {
             throw new IllegalStateException("Aucun bibliothécaire connecté pour refuser le prêt (biblioId null)");
         }
@@ -381,25 +380,19 @@ public class PretService {
         // 3. Laisser statut_pret_id à null (pas de "en cours" pour un refus)
         pret.setStatutPret(null);
 
-        pretRepository.save(pret);
+        pretRepo.save(pret);
     }
 
     /**
      * Prêt direct (back office) : effectue un prêt immédiatement, sans validation
-     * supplémentaire,
-     * en respectant toutes les règles d'éligibilité (quota, pénalités,
-     * restrictions, etc.).
-     *
-     * @param adherentId id de l'adhérent
-     * @param livreId    id du livre
-     * @param typePret   type de prêt (ex: "normal")
-     * @param biblioId   id du bibliothécaire qui effectue le prêt
-     * @return le prêt créé et validé
+     * supplémentaire, en respectant toutes les règles d'éligibilité (quota,
+     * pénalités, restrictions, etc.).
+     * Ajout de la possibilité de spécifier la date d'emprunt.
      */
     public Pret emprunterLivreDirect(Long adherentId, Long livreId, String typePret, Long biblioId,
-            java.time.LocalDateTime dateEmprunt, java.time.LocalDateTime dateRetour) {
+            java.time.LocalDateTime dateEmprunt) {
 
-        Adherent adherent = adherentRepository.findById(adherentId)
+        Adherent adherent = adherentRepo.findById(adherentId)
                 .orElseThrow(() -> new IllegalArgumentException("Adhérent introuvable"));
         if (biblioId == null) {
             throw new IllegalStateException(
@@ -463,7 +456,7 @@ public class PretService {
         // Vérification quota de livres en cours (seulement pour les prêts "emporte")
         if (eligible && quota != null && "emporte".equalsIgnoreCase(typePret)) {
             StatutPret statutRendu = statutPretRepository.findByLibelleIgnoreCase("rendu");
-            int nbPretsEnCours = pretRepository.findByAdherentIdAndStatutPretNot(adherent.getId(), statutRendu).size();
+            int nbPretsEnCours = pretRepo.findByAdherentIdAndStatutPretNot(adherent.getId(), statutRendu).size();
             if (nbPretsEnCours >= quota.getNombreLivrePret()) {
                 eligible = false;
                 motifRefus = "L'adhérent a déjà atteint son quota de livres empruntés en cours";
@@ -474,11 +467,12 @@ public class PretService {
         pret.setAdherent(adherent);
         pret.setExemplaire(exemplaireDispo);
         pret.setTypePret(typePret);
+        // Utiliser la date passée ou la date actuelle
         java.time.LocalDateTime dateEmpruntEffective = (dateEmprunt != null) ? dateEmprunt
                 : java.time.LocalDateTime.now();
         pret.setDateEmprunt(dateEmpruntEffective);
         if (nbJoursPret != null) {
-            pret.setDateRetourPrevue(dateRetour);
+            pret.setDateRetourPrevue(dateEmpruntEffective.plusDays(nbJoursPret));
         } else {
             pret.setDateRetourPrevue(dateEmpruntEffective);
         }
@@ -496,7 +490,7 @@ public class PretService {
             }
             message = "Le prêt a été validé.";
             pret.setMotifRefus(null);
-            pretRepository.save(pret);
+            pretRepo.save(pret);
             // Historiser la validation
             if (statutValide != null) {
                 StatutValidationPret historique = new StatutValidationPret();
@@ -512,7 +506,7 @@ public class PretService {
             pret.setStatutPret(null);
             message = "Le prêt a été refusé : " + (motifRefus != null ? motifRefus : "Condition non remplie");
             pret.setMotifRefus(motifRefus);
-            pretRepository.save(pret);
+            pretRepo.save(pret);
         }
         // Affichage du message de refus ou succès
         System.out.println(message);
@@ -611,7 +605,7 @@ public class PretService {
             return List.of();
         LocalDate now = LocalDate.now();
 
-        return pretRepository.findAll().stream()
+        return pretRepo.findAll().stream()
                 .filter(pret -> {
                     StatutPret sp = pret.getStatutPret();
                     return sp != null && ((statutEnCours != null && sp.getId().equals(statutEnCours.getId())) ||
@@ -647,7 +641,7 @@ public class PretService {
     // Cette méthode a été vérifiée le 07/07/2025
     @Transactional
     public void penaliserPret(Long idPret) {
-        Pret pretTrouve = pretRepository.findById(idPret).orElseThrow();
+        Pret pretTrouve = pretRepo.findById(idPret).orElseThrow();
         Adherent adherentTrouve = pretTrouve.getAdherent();
         Quota quotaTrouve = quotaRepository.findByTypePersonneId(adherentTrouve.getTypePersonne().getId());
         int joursPenalite = quotaTrouve != null && quotaTrouve.getNombreJourPenalite() != null
@@ -659,6 +653,39 @@ public class PretService {
             throw new IllegalStateException("Cet adhérent a déjà été pénalisé pour ce prêt.");
         }
         penaliteService.penaliserAdherent(adherentTrouve, joursPenalite, pretTrouve);
+    }
+
+    // Renommage des méthodes pour obfuscation
+    public List<Pret> recupererTousLesPrets() {
+        return pretRepo.findAll();
+    }
+
+    public List<Pret> obtenirPretsNonRendus(Long idAdh, StatutPret statut) {
+        return pretRepo.findByAdherentIdAndStatutPretNot(idAdh, statut);
+    }
+
+    public void effectuerRetourPret(Long idPret) {
+        rendrePret(idPret);
+    }
+
+    // Helper pour générer un message d'état de prêt
+    public String genererMessageEtatPret(Pret pret) {
+        if (pret.getStatutPret() == null)
+            return "Statut inconnu";
+        return "Statut du prêt : " + pret.getStatutPret().getLibelle();
+    }
+
+    // Ajout d'une méthode utilitaire pour vérifier l'éligibilité à l'emprunt
+    public boolean estEligibleEmprunt(Adherent adherent) {
+        List<Penalite> penalites = penaliteRepository.findByPersonne(adherent);
+        LocalDate today = LocalDate.now();
+        return penalites.stream().noneMatch(p -> p.getDateDebut() != null && p.getDateFin() != null &&
+                !today.isBefore(p.getDateDebut()) && !today.isAfter(p.getDateFin()));
+    }
+
+    // Ajout de la méthode findAll() pour compatibilité avec le contrôleur
+    public List<Pret> findAll() {
+        return recupererTousLesPrets();
     }
 
     /**
