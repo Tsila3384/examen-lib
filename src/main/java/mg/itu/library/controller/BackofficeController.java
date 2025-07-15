@@ -26,7 +26,8 @@ public class BackofficeController {
     private final LivreService livreService;
     private final ReservationService reservationService;
 
-    public BackofficeController(PretService pretService, AdherentService adherentService, LivreService livreService, ReservationService reservationService) {
+    public BackofficeController(PretService pretService, AdherentService adherentService, LivreService livreService,
+            ReservationService reservationService) {
         this.pretService = pretService;
         this.adherentService = adherentService;
         this.livreService = livreService;
@@ -45,9 +46,9 @@ public class BackofficeController {
     // Validation ou refus d'une réservation
     @PostMapping("/backoffice/reservations/valider")
     public String validerReservation(@RequestParam("reservationId") Long reservationId,
-                                     @RequestParam("action") String action,
-                                     HttpSession session,
-                                     Model model) {
+            @RequestParam("action") String action,
+            HttpSession session,
+            Model model) {
         Long biblioId = (Long) session.getAttribute("biblioId");
         if (biblioId == null) {
             model.addAttribute("erreur", "Vous devez être connecté comme bibliothécaire.");
@@ -77,7 +78,9 @@ public class BackofficeController {
 
     // Traitement du prêt direct
     @PostMapping("/backoffice/pret-direct")
-    public String doPretDirect(@RequestParam Long adherentId, @RequestParam Long livreId, @RequestParam String typePret, HttpSession session, Model model) {
+    public String doPretDirect(@RequestParam Long adherentId, @RequestParam Long livreId, @RequestParam String typePret,
+            @RequestParam(required = false) String dateEmprunt, @RequestParam(required = false) String dateRetour,
+            HttpSession session, Model model) {
         List<Adherent> adherents = adherentService.findAll();
         List<Livre> livres = livreService.findAll();
         model.addAttribute("adherents", adherents);
@@ -88,9 +91,18 @@ public class BackofficeController {
             return "backoffice/pret_direct";
         }
         try {
-            Pret pret = pretService.emprunterLivreDirect(adherentId, livreId, typePret, biblioId);
+            java.time.LocalDateTime dateEmpruntValue = null;
+            if (dateEmprunt != null && !dateEmprunt.isEmpty()) {
+                dateEmpruntValue = java.time.LocalDateTime.parse(dateEmprunt);
+            }
+            java.time.LocalDateTime dateRetourValue = null;
+            if (dateRetour != null && !dateRetour.isEmpty()) {
+                dateRetourValue = java.time.LocalDateTime.parse(dateRetour);
+            }
+            Pret pret = pretService.emprunterLivreDirect(adherentId, livreId, typePret, biblioId, dateEmpruntValue, dateRetourValue);
             if (pret.getStatutValidation() != null && pret.getStatutValidation().getId() == 3) {
-                model.addAttribute("erreur", "Le prêt a été refusé : " + (pret.getMotifRefus() != null ? pret.getMotifRefus() : "Condition non remplie"));
+                model.addAttribute("erreur", "Le prêt a été refusé : "
+                        + (pret.getMotifRefus() != null ? pret.getMotifRefus() : "Condition non remplie"));
             } else {
                 model.addAttribute("message", "Prêt enregistré et validé directement.");
             }

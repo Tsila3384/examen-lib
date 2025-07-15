@@ -215,7 +215,8 @@
                         <th>👤 Adhérent</th>
                         <th>📚 Livre</th>
                         <th>📖 Exemplaire</th>
-                        <th>📅 Date</th>
+                        <th>📅 Date d'Emprunt</th>
+                        <th>📅 Date de Retour</th>
                         <th>🏷️ Type</th>
                         <th>⚙️ Actions</th>
                     </tr>
@@ -235,6 +236,7 @@
                             <span class="status-badge">Ex. #${pret.exemplaire.id}</span>
                         </td>
                         <td data-label="Date">${pret.dateEmprunt}</td>
+                         <td data-label="Date">${pret.dateRetourPrevue}</td>
                         <td data-label="Type">
                             <c:choose>
                                 <c:when test="${pret.typePret == 'emporte'}">
