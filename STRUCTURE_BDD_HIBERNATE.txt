@@ -1,0 +1,78 @@
+Structure de la base de données selon les entités Hibernate
+===========================================================
+
+1. Personne
+------------
+- Table : personne
+- Champs : id, nom, prenom, email, adresse, date_naissance
+- Héritage : Adherent, Bibliothecaire
+
+2. Adherent
+------------
+- Table : adherent (clé primaire jointe sur personne)
+- Champs : personne_id, numero_adherent, date_inscription, statut, mot_de_passe, type_personne_id (FK)
+
+3. Bibliothecaire
+-----------------
+- Table : bibliothecaire (clé primaire jointe sur personne)
+- Champs : personne_id, matricule, date_embauche, mot_de_passe
+
+4. TypePersonne
+---------------
+- Table : type_personne
+- Champs : id, libelle
+
+5. Livre
+--------
+- Table : livre
+- Champs : id, reference, titre, auteur, resume
+- Relations : ManyToMany avec Categorie (table de jointure categorie_livre)
+- Relations : OneToMany avec Exemplaire
+
+6. Categorie
+------------
+- Table : categorie
+- Champs : id, libelle
+- Relations : ManyToMany avec Livre
+
+7. CategorieLivre
+-----------------
+- Table : categorie_livre
+- Champs : livre_id, categorie_id (clé composite)
+
+8. Exemplaire
+-------------
+- Table : exemplaire
+- Champs : id, livre_id (FK), statut_id (FK StatutDisponibilite)
+
+9. StatutDisponibilite
+----------------------
+- Table : statut_disponibilite
+- Champs : id, libelle
+
+10. Pret
+--------
+- Table : pret
+- Champs : id, exemplaire_id (FK), adherent_id (FK), type_pret, date_emprunt, date_retour_prevue, statut_pret_id (FK), statut_validation (FK)
+
+11. StatutPret
+--------------
+- Table : statut_pret
+- Champs : id, libelle
+
+12. StatutValidation
+-------------------
+- Table : statut_validation
+- Champs : id, libelle
+
+13. Reservation
+---------------
+- Table : reservation
+- Champs : id, exemplaire_id (FK), adherent_id (FK), type_pret, date_reservation, date_expiration, statut_id (FK StatutValidation)
+
+... (Compléter avec les autres entités si besoin)
+
+Chaque entité Java correspond à une table SQL, avec les relations (ManyToOne, OneToMany, ManyToMany) gérées par Hibernate/JPA.
+Les clés étrangères et les jointures sont définies par les annotations (@ManyToOne, @JoinColumn, @ManyToMany, etc.).
+
+Ce fichier synthétise la structure de la base telle que générée par Hibernate à partir des entités du projet.
