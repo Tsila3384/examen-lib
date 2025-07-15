@@ -1,0 +1,74 @@
+Analyse du projet Spring Boot - Library
+=====================================
+
+1. Architecture générale
+------------------------
+- **Type de projet** : Application web Spring Boot (Java 17)
+- **Structure MVC** :
+  - Contrôleurs, Services, Repositories, Modèles (Entities)
+  - Utilisation de Spring Data JPA pour la persistance
+  - Vue : JSP (Java Server Pages) via Tomcat Embedded Jasper
+- **Gestion des dépendances** : Maven
+- **Séparation claire** entre la logique métier, la persistance et la présentation
+
+2. Structure de la base de données
+----------------------------------
+- **SGBD utilisé** : PostgreSQL
+- **Tables principales** :
+  - `personne`, `adherent`, `bibliothecaire`, `type_personne`
+  - `livre`, `categorie`, `categorie_livre`, `restriction_livre`, `exemplaire`
+  - `pret`, `reservation`, `prolongation_pret`, `penalite`, `quota`, `configuration`, `jour_ferie`
+  - Tables de statuts : `statut_pret`, `statut_validation`, `statut_disponibilite`, etc.
+- **Relations** :
+  - Héritage entre `personne`, `adherent`, `bibliothecaire`
+  - Relations entre livres, catégories, exemplaires, réservations, prêts
+  - Gestion des statuts et historiques pour les prêts, réservations, prolongations
+  - Gestion des quotas et pénalités
+- **Initialisation** : Fichiers SQL pour la création des tables et l'insertion de données de base
+
+3. Techniques de développement
+------------------------------
+- **Spring Boot** : Démarrage rapide, configuration simplifiée
+- **Spring Data JPA** : Repositories pour l'accès aux données, mapping objet-relationnel
+- **JSP** : Pour la couche vue (front/back office)
+- **Services** : Encapsulation de la logique métier
+- **Utilisation de Lombok** (optionnel) pour réduire le code boilerplate
+- **Gestion des propriétés** : `application.properties` pour la config (BDD, vues, ressources statiques)
+- **Tests unitaires** : Présence de tests avec JUnit (SpringBootTest)
+
+4. Fonctionnalités principales
+------------------------------
+- Gestion des utilisateurs (adherents, bibliothécaires)
+- Gestion des livres, catégories, restrictions
+- Prêts, réservations, prolongations, pénalités
+- Gestion des quotas et jours fériés
+- Historisation des statuts et actions
+
+5. Points d'attention pour reprise et évolution
+-----------------------------------------------
+- Respecter la structure MVC et l'organisation des packages
+- Ajouter les entités, repositories, services et contrôleurs pour toute nouvelle fonctionnalité
+- Mettre à jour les fichiers SQL pour la structure de la base si besoin
+- Adapter les vues JSP pour l'interface utilisateur
+- Vérifier la cohérence des relations et des validations métier
+- Utiliser les conventions Spring Boot pour la configuration et l'injection de dépendances
+- Tester les nouvelles fonctionnalités avec JUnit
+
+6. Conseils pour l'ajout de fonctionnalités
+-------------------------------------------
+- Créer les entités correspondantes dans le package `model`
+- Ajouter les repositories dans `repository`
+- Implémenter la logique métier dans `service`
+- Créer/adapter les contrôleurs pour exposer les endpoints
+- Mettre à jour les JSP pour l'affichage et l'interaction
+- Mettre à jour la base de données (script SQL + JPA)
+- Ajouter des tests unitaires et d'intégration
+
+7. Autres points
+----------------
+- Les ressources statiques (CSS, JS) sont dans `src/main/resources/static`
+- Les vues JSP sont dans `src/main/webapp/WEB-INF/jsp`
+- La configuration de la base et des vues est centralisée dans `application.properties`
+- Les scripts SQL sont dans `src/main/resources/database/sql`
+
+Ce document synthétise l'essentiel pour reprendre et faire évoluer le projet.

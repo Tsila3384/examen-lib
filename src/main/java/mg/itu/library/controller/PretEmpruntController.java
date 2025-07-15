@@ -40,6 +40,6 @@ public class PretEmpruntController {
         } catch (Exception e) {
             model.addAttribute("erreur", e.getMessage());
         }
-        return "redirect:/catalogue";
+        return "redirect:/frontoffice";
     }
 }
